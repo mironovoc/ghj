@@ -1,9 +1,9 @@
 package ru.kata.spring.boot_security.demo.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -17,13 +17,14 @@ import ru.kata.spring.boot_security.demo.repository.UserRepository;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 @Transactional
 @Service
 public class UserServiceImp implements UserDetailsService, UserService {
-    @PersistenceContext
-    private EntityManager em;
 
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
@@ -42,63 +43,67 @@ public class UserServiceImp implements UserDetailsService, UserService {
             throw new UsernameNotFoundException("User not found");
         }
         Set<GrantedAuthority> grantedAuthorities = new HashSet<>();
-        for (Role role : user.getRoles()){
+        for (Role role : user.getRoles()) {
             grantedAuthorities.add(new SimpleGrantedAuthority(role.getName()));
         }
         return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), grantedAuthorities);
     }
 
+    @Override
     public User findUserByName(String username) {
-        User user = userRepository.findByUsername(username);
-        return user;
+        return userRepository.findByUsername(username);
     }
 
+    @Override
     public User findUserById(Long userId) {
-        Optional<User> userFromDb = userRepository.findById(userId);
-        return userFromDb.orElse(new User());
+        return userRepository.findById(userId).orElse(new User());
     }
 
+    @Override
     public List<User> allUsers() {
         return userRepository.findAll();
     }
 
+    @Override
     public boolean saveUser(User user) {
         if (user.getPassword().isEmpty()) {
-            User userFromDb = userRepository.findById(user.getId()).get();
-            if (userFromDb != null) {user.setPassword(userFromDb.getPassword());}
-        } else  {
+            User userFromDb = userRepository.findById(user.getId()).orElse(null);
+            if (userFromDb != null) {
+                user.setPassword(userFromDb.getPassword());
+            }
+        } else {
             user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
         }
         userRepository.save(user);
         return true;
     }
 
-    @Bean
-    public BCryptPasswordEncoder bbCryptPasswordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
+    @Override
     public boolean deleteUser(Long userId) {
-        if (userRepository.findById(userId).isPresent()) {
+        if (userRepository.existsById(userId)) {
             userRepository.deleteById(userId);
             return true;
         }
         return false;
     }
 
+    @Override
     public List<User> usergtList(Long idMin) {
-        return em.createQuery("SELECT u FROM User u WHERE u.id > :paramId", User.class)
-                .setParameter("paramId", idMin).getResultList();
+        return List.of();
     }
 
+    @Override
     public List<Role> listRoles() {
         return roleRepository.findAll();
     }
 
     @Override
+    public BCryptPasswordEncoder bbCryptPasswordEncoder() {
+        return null;
+    }
+
+    @Override
     public Optional<User> findByEmail(String email) {
-        return em.createQuery("select u from User u where u.email =:email", User.class)
-                .setParameter("email", email)
-                .getResultStream().findAny();
+        return Optional.ofNullable(userRepository.findByEmail(email));
     }
 }

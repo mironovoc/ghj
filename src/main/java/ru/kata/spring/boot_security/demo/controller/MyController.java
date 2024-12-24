@@ -1,7 +1,6 @@
 package ru.kata.spring.boot_security.demo.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -11,28 +10,24 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import ru.kata.spring.boot_security.demo.model.Role;
 import ru.kata.spring.boot_security.demo.model.User;
-import ru.kata.spring.boot_security.demo.service.UserServiceImp;
+import ru.kata.spring.boot_security.demo.service.UserService;
 
 import java.util.List;
 
 @Controller
 public class MyController {
-    private final UserServiceImp userService;
+    private final UserService userService;
 
     @Autowired
-    private StringHttpMessageConverter stringHttpMessageConverter;
-
-    @Autowired
-    private MyController(UserServiceImp userService) {
+    public MyController(UserService userService) {
         this.userService = userService;
     }
-
 
     @GetMapping("/admin")
     public String userList(Model model) {
         model.addAttribute("allUsers", userService.allUsers());
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String us=auth.getName();
+        String us = auth.getName();
         model.addAttribute("user", userService.findUserByName(us));
         model.addAttribute("newuser", new User());
         List<Role> listRoles = userService.listRoles();
@@ -41,10 +36,10 @@ public class MyController {
     }
 
     @PostMapping("/admin")
-    public String  deleteUser(@RequestParam(required = true, defaultValue = "" ) Long userId,
-                              @RequestParam(required = true, defaultValue = "" ) String action,
-                              Model model) {
-        if (action.equals("delete")){
+    public String deleteUser(@RequestParam(required = true, defaultValue = "") Long userId,
+                             @RequestParam(required = true, defaultValue = "") String action,
+                             Model model) {
+        if (action.equals("delete")) {
             userService.deleteUser(userId);
         }
         return "redirect:/admin";
@@ -53,14 +48,16 @@ public class MyController {
     @GetMapping("/user")
     public String userdt(Model model) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String us=auth.getName();
+        String us = auth.getName();
         User user = userService.findUserByName(us);
-        if (user == null) {user = new User();}
+        if (user == null) {
+            user = new User();
+        }
         model.addAttribute("user", user);
         return "user";
     }
 
-    @RequestMapping (value = "/edit", method= RequestMethod.GET)
+    @RequestMapping(value = "/edit", method = RequestMethod.GET)
     public String edit(ModelMap model, @RequestParam Long id) {
         User user = userService.findUserById(id);
         model.addAttribute("user", user);
@@ -69,10 +66,10 @@ public class MyController {
         return "edit";
     }
 
-    @RequestMapping(value="/edit", method=RequestMethod.POST)
+    @RequestMapping(value = "/edit", method = RequestMethod.POST)
     public ModelAndView edit(@ModelAttribute User model,
-                             @RequestParam(value="action", required=true) String action) {
-        switch(action) {
+                             @RequestParam(value = "action", required = true) String action) {
+        switch (action) {
             case "save":
                 userService.saveUser(model);
                 break;
@@ -86,10 +83,10 @@ public class MyController {
                 // do stuff
                 break;
         }
-        return new ModelAndView( "redirect:/admin");
+        return new ModelAndView("redirect:/admin");
     }
 
-    @RequestMapping (value = "/delete", method= RequestMethod.GET)
+    @RequestMapping(value = "/delete", method = RequestMethod.GET)
     public String del(ModelMap model, @RequestParam Long id) {
         User user = userService.findUserById(id);
         model.addAttribute("user", user);
@@ -98,19 +95,20 @@ public class MyController {
         return "delete";
     }
 
-    @RequestMapping(value="delete", method= RequestMethod.POST)
+    @RequestMapping(value = "delete", method = RequestMethod.POST)
     public String deleteItem(@RequestParam Long id) {
         userService.deleteUser(id);
         return "redirect:/admin";
     }
-    @RequestMapping(value = "/adminadd", method=RequestMethod.GET)
+
+    @RequestMapping(value = "/adminadd", method = RequestMethod.GET)
     public String add(ModelMap model) {
         User user = new User();
         model.addAttribute("user", user);
         return "adminadd";
     }
 
-    @RequestMapping(value="/adminadd", method=RequestMethod.POST)
+    @RequestMapping(value = "/adminadd", method = RequestMethod.POST)
     public String addNewOrder(@ModelAttribute User model) {
         userService.saveUser(model);
         return "redirect:/admin";
