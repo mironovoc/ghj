@@ -21,7 +21,7 @@
         </div>
     </div>
 </div>
-<div class="container-fluid">
+<div class="container-fluid" style="margin-top: 15px;">
     <div class="row" style="height: 100vh;">
         <div class="col-2">
             <ul class="nav flex-column">
@@ -87,35 +87,36 @@
                         <form class="col-6 mx-auto" action="#" th:action="@{/adminadd}" th:object="${newuser}" method="post">
                             <input type="hidden" th:field="*{id}" id="id">
                             <div class="form-group row">
-                                <label class="col col-form-label" for="username">User name</label>
-                                <input class="form-control-plaintext border" type="text" th:field="*{username}" placeholder="user name" />
+                                <label class="col col-form-label"><strong>User name</strong></label>
+                                <input class="form-control-plaintext border" type="text" th:field="*{username}" placeholder="" />
                             </div>
                             <div class="form-group row">
-                                <label class="col col-form-label" for="firstname">First name</label>
-                                <input class="form-control-plaintext border" type="text" th:field="*{firstname}" placeholder="first name" />
+                                <label class="col col-form-label"><strong>First name</strong></label>
+                                <input class="form-control-plaintext border" type="text" th:field="*{firstname}" placeholder="" />
                             </div>
                             <div class="form-group row">
-                                <label class="col col-form-label" for="lastname">Last name</label>
-                                <input class="form-control-plaintext border" type="text" th:field="*{lastname}" placeholder="last name" />
+                                <label class="col col-form-label"><strong>Last name</strong></label>
+                                <input class="form-control-plaintext border" type="text" th:field="*{lastname}" placeholder="" />
                             </div>
                             <div class="form-group row">
-                                <label class="col col-form-label" for="age">Age</label>
-                                <input class="form-control-plaintext border" type="number" th:field="*{age}" placeholder="age" min="0" />
+                                <label class="col col-form-label"><strong>Age</strong></label>
+                                <input class="form-control-plaintext border" type="number" th:field="*{age}" placeholder="" min="0" />
                             </div>
                             <div class="form-group row">
-                                <label class="col col-form-label" for="email">Email</label>
-                                <input class="form-control-plaintext border" type="text" th:field="*{email}" placeholder="email" />
+                                <label class="col col-form-label"><strong>Email</strong></label>
+                                <input class="form-control-plaintext border" type="text" th:field="*{email}" placeholder="" />
                             </div>
                             <div class="form-group row">
-                                <label class="col col-form-label" for="password">Password</label>
-                                <input class="form-control" type="password" th:field="*{password}" placeholder="password" />
+                                <label class="col col-form-label"><strong>Password</strong></label>
+                                <input class="form-control" type="password" th:field="*{password}" placeholder="" />
                             </div>
                             <div class="form-group row">
                                 <label class="col col-form-label"><strong>Role</strong></label>
-                                <div class="form-check" th:each="role : ${listRoles}">
-                                    <input class="form-check-input" type="checkbox" th:field="*{roles}" th:value="${role.id}" th:id="${'role_' + role.id}">
-                                    <label class="form-check-label" th:for="${'role_' + role.id}" th:text="${role.name}"></label>
-                                </div>
+                                <select th:field="*{roles}" multiple class="custom-select" id="roles">
+                                    <option th:each="role : ${listRoles}"
+                                            th:text="${role.name}"
+                                            th:value="${role.id}">
+                                </select>
                             </div>
                             <button class="btn btn-success" name="action" type="submit" value="save">Add new user</button>
                         </form>

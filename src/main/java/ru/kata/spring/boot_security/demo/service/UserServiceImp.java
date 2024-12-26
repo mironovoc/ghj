@@ -59,7 +59,7 @@ public class UserServiceImp implements UserDetailsService, UserService {
     }
 
     @Override
-    public boolean saveUser(User user) {
+    public void saveUser(User user) {
         if (user.getPassword().isEmpty()) {
             User userFromDb = userRepository.findById(user.getId()).orElse(null);
             if (userFromDb != null) {
@@ -69,16 +69,13 @@ public class UserServiceImp implements UserDetailsService, UserService {
             user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
         }
         userRepository.save(user);
-        return true;
     }
 
     @Override
-    public boolean deleteUser(Long userId) {
+    public void deleteUser(Long userId) {
         if (userRepository.existsById(userId)) {
             userRepository.deleteById(userId);
-            return true;
         }
-        return false;
     }
 
     @Override

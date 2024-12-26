@@ -25,8 +25,7 @@ public class AdminController {
     public String userList(Model model) {
         model.addAttribute("allUsers", userService.allUsers());
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String us = auth.getName();
-        model.addAttribute("user", userService.findUserByName(us));
+        model.addAttribute("user", userService.findUserByName(auth.getName()));
         model.addAttribute("newuser", new User());
         List<Role> listRoles = userService.listRoles();
         model.addAttribute("listRoles", listRoles);

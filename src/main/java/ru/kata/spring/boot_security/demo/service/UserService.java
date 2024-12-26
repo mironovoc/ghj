@@ -17,9 +17,9 @@ public interface UserService {
 
     List<User> allUsers();
 
-    boolean saveUser(User user);
+    void saveUser(User user);
 
-    boolean deleteUser(Long userId);
+    void deleteUser(Long userId);
 
     List<User> usergtList(Long idMin);
 
