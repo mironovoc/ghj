@@ -26,7 +26,7 @@ public class AdminController {
     }
 
     @GetMapping("/admin")
-    public String userList(Model model) {
+    public String getAllUsers(Model model) {
         model.addAttribute("allUsers", userService.allUsers());
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         model.addAttribute("user", userService.findUserByName(auth.getName()));
@@ -37,7 +37,7 @@ public class AdminController {
     }
 
     @GetMapping(value = "/edit")
-    public String edit(ModelMap model, @RequestParam Long id) {
+    public String getPageEdit(ModelMap model, @RequestParam Long id) {
         User user = userService.findUserById(id);
         model.addAttribute("user", user);
         List<Role> listRoles = userService.listRoles();
@@ -46,33 +46,33 @@ public class AdminController {
     }
 
     @PostMapping("/edit")
-    public String edit(@ModelAttribute User model,
-                       @RequestParam(value = "action") String action) {
+    public String updateUser(@ModelAttribute User model,
+                             @RequestParam(value = "action") String action) {
         userService.saveUser(model);
         return "redirect:/admin";
     }
 
     @GetMapping(value = "/delete")
-    public String del(ModelMap model, @RequestParam Long id) {
+    public String getPageDelete(ModelMap model, @RequestParam Long id) {
         model.addAttribute("user", userService.findUserById(id));
         return "delete";
     }
 
     @PostMapping(value = "delete")
-    public String deleteItem(@RequestParam Long id) {
+    public String Delete(@RequestParam Long id) {
         userService.deleteUser(id);
         return "redirect:/admin";
     }
 
     @GetMapping("/add")
-    public String addUserForm(Model model) {
+    public String getPageNewUser(Model model) {
         model.addAttribute("user", new User());
         model.addAttribute("listRoles", userService.listRoles());
         return "adminadd";
     }
 
     @PostMapping(value = "/adminadd")
-    public String addNewOrder(@ModelAttribute User model) {
+    public String SaveNewUser(@ModelAttribute User model) {
         userService.saveUser(model);
         return "redirect:/admin";
     }
