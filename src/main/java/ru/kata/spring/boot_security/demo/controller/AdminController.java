@@ -59,8 +59,7 @@ public class AdminController {
 
     @GetMapping(value = "/delete")
     public String del(ModelMap model, @RequestParam Long id) {
-        User user = userService.findUserById(id);
-        model.addAttribute("user", user);
+        model.addAttribute("user", userService.findUserById(id));
         return "delete";
     }
 
@@ -70,10 +69,10 @@ public class AdminController {
         return "redirect:/admin";
     }
 
-    @GetMapping(value = "/adminadd")
-    public String add(ModelMap model) {
-        User user = new User();
-        model.addAttribute("user", user);
+    @GetMapping("/add")
+    public String addUserForm(Model model) {
+        model.addAttribute("user", new User());
+        model.addAttribute("listRoles", userService.listRoles());
         return "adminadd";
     }
 
