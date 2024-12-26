@@ -61,10 +61,7 @@ public class UserServiceImp implements UserDetailsService, UserService {
     @Override
     public void saveUser(User user) {
         if (user.getPassword().isEmpty()) {
-            User userFromDb = userRepository.findById(user.getId()).orElse(null);
-            if (userFromDb != null) {
-                user.setPassword(userFromDb.getPassword());
-            }
+            userRepository.findById(user.getId()).ifPresent(userFromDb -> user.setPassword(userFromDb.getPassword()));
         } else {
             user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
         }

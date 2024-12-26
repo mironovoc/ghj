@@ -48,15 +48,7 @@ public class AdminController {
     @PostMapping("/edit")
     public String edit(@ModelAttribute User model,
                        @RequestParam(value = "action") String action) {
-        if ("save".equals(action)) {
-            userService.saveUser(model);
-        } else if ("cancel".equals(action)) {
-            // do stuff
-        } else if ("newthing".equals(action)) {
-            // do stuff
-        } else {
-            // do stuff
-        }
+        userService.saveUser(model);
         return "redirect:/admin";
     }
 
