@@ -22,9 +22,6 @@
       <div sec:authorize="isAuthenticated()">
         <a class="nav-link" href="/logout">Logout</a>
       </div>
-      <div sec:authorize="isAnonymous()">
-        <a class="nav-link" href="#" th:href="@{/login}">Login</a>
-      </div>
     </div>
   </div>
 </div>
@@ -32,11 +29,16 @@
   <div class="row" style="height: 100vh;">
     <div class="col-2">
       <ul class="nav flex-column">
+        <!-- Вкладка Admin, видимая только для пользователей с ролью ROLE_ADMIN -->
+        <li class="nav-item" sec:authorize="hasRole('ROLE_ADMIN')">
+          <a class="nav-link" style="color: #000; background-color: transparent;" th:href="@{/admin}">Admin</a>
+        </li>
         <li class="nav-item" style="background-color: #49aaff;">
           <a class="nav-link" style="color: white;" th:href="@{/user}">User</a>
         </li>
       </ul>
     </div>
+
     <div class="col-10 bg-light">
       <h1 class="text-center"><b>User information-page</b></h1>
       <div class="col" style="background-color: #e6e6e6;"><h3>About user</h3></div>

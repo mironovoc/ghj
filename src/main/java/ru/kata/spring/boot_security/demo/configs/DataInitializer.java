@@ -41,7 +41,6 @@ public class DataInitializer implements CommandLineRunner {
 
         Set<Role> adminRoles = new HashSet<>();
         adminRoles.add(adminRole);
-        adminRoles.add(userRole);
         admin.setRoles(adminRoles);
         userRepository.save(admin);
 

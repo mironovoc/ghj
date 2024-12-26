@@ -4,7 +4,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
-import javax.validation.constraints.Size;
 import java.util.Collection;
 import java.util.Set;
 
@@ -16,12 +15,9 @@ public class User implements UserDetails {
     private Long id;
     private Byte age;
     private String email;
-    @Size(min = 5, message = "Не меньше 5 знаков")
     private String username;
     private String firstname;
-    @Size(min = 5, message = "Не меньше 5 знаков")
     private String lastname;
-    @Size(min = 5, message = "Не меньше 5 знаков")
     private String password;
     @ManyToMany(fetch = FetchType.LAZY)
     private Set<Role> roles;
