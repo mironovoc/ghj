@@ -2,61 +2,47 @@ package ru.kata.spring.boot_security.demo.model;
 
 import org.springframework.security.core.GrantedAuthority;
 
-import javax.persistence.*;
-import java.util.Set;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 
 @Entity
 @Table(name = "roles")
-public class Role implements GrantedAuthority {
-    @Id
-    private Long id;
+public  class Role extends AbstractEntity<Integer> implements GrantedAuthority {
+    private static final long serialVersionUID = 7217778059836250424L;
+
+    @Column(unique = true)
     private String name;
-    @Transient
-    @ManyToMany(mappedBy = "roles")
-    private Set<User> users;
+
+//    @ManyToMany(mappedBy = "roles")
+//    private List<User> users = new ArrayList<>();
 
     public Role() {
     }
 
-    public Role(Long id) {
-        this.id = id;
-    }
-
-    public Role(Long id, String name) {
-        this.id = id;
+    public Role(String name) {
         this.name = name;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
+    public Role(Integer id) {
+        this.setId(id);
     }
 
     public String getName() {
-        return name;
+        return name.substring(5);
     }
 
     public void setName(String name) {
         this.name = name;
     }
 
-    public Set<User> getUsers() {
-        return users;
-    }
-
-    public void setUsers(Set<User> users) {
-        this.users = users;
+    @Override
+    public String getAuthority() {
+        return name;
     }
 
     @Override
-    public String getAuthority() {
-        return getName();
-    }
-
     public String toString() {
-        return name;
+        return String.format("Role [id = %d; name = %s;]", this.getId(), name);
     }
 }
